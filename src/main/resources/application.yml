@@ -1,0 +1,43 @@
+
+server:
+  port: 8095
+
+logging:
+  level:
+    root: info
+    com.tss: info
+
+spring:
+  application:
+    name: tss-auth-server
+  # \u6570\u636E\u6E90\u914D\u7F6E
+  datasource:
+    url: jdbc:mysql://dev.tss.com:3306/njit_oauth?useUnicode=true&characterEncoding=utf8
+    driver-class-name: com.mysql.jdbc.Driver
+    username: njittss
+    password: njittss!@#$5678
+
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://localhost:8090/eureka/
+
+ribbon:
+  eager-load:
+    enabled: true
+    clients: tss-auth-server
+  ReadTimeout: 10000
+  ConnectTimeout: 10000
+
+
+security:
+  oauth2:
+    resource:
+      filter-order: 3
+
+# custom config
+access_token:
+  store-jwt: false
+
