@@ -10,7 +10,6 @@ logging:
 spring:
   application:
     name: tss-auth-server
-  # \u6570\u636E\u6E90\u914D\u7F6E
   datasource:
     url: jdbc:mysql://dev.tss.com:3306/njit_oauth?useUnicode=true&characterEncoding=utf8
     driver-class-name: com.mysql.jdbc.Driver
@@ -38,6 +37,13 @@ security:
       filter-order: 3
 
 # custom config
-access_token:
-  store-jwt: false
-
+authentication: 
+  oauth: 
+    clientId: app
+    clientSecret: app_20181206
+    tokenValidityInSeconds: 1800
+    scope: 
+      - web
+    grantType: 
+      - password
+      - refresh_token
