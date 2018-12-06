@@ -36,13 +36,33 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        LoginUserInfoVO loginUserInfo = accountService.findStudentByUserAcc(username);
+        LoginUserInfoVO loginUserInfo = this.getUserInfo(username);
         if (loginUserInfo == null) {
             throw new AuthenticationCredentialsNotFoundException("用户不存在");
         }
 
         User user = new User(loginUserInfo.getUserAcc(), loginUserInfo.getPassword(), this.buildGrantedAuthority(loginUserInfo));
         return user;
+    }
+    
+    private LoginUserInfoVO getUserInfo(String username) {
+        // 为了支持多角色登录，这里username后面拼装上登录类型,如username|type
+        String[] params = username.split("\\|");
+        username = params[0];// 真正的用户名
+        
+        switch (params[1]) {
+            case "1": 
+                break;
+            case "2":
+                break;
+            case "3":
+                break;
+            case "4":
+                return accountService.findStudentByUserAcc(username);
+            default:
+                throw new AuthenticationCredentialsNotFoundException("账号无效");
+        }
+        return null;
     }
 
     // 获取用户的所有权限并且SpringSecurity需要的集合
