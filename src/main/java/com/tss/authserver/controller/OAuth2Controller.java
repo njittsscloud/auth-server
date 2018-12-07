@@ -1,5 +1,6 @@
 package com.tss.authserver.controller;
 
+import com.tss.basic.site.user.annotation.UserAuthInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +27,15 @@ public class OAuth2Controller {
      * @return
      */
     @GetMapping("/user-me")
-    public Authentication principal() {
+    public UserAuthInfo principal() {
+        UserAuthInfo userAuthInfo = new UserAuthInfo();
+        
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        LOG.info("user-me:{}", authentication.getName());
-        return authentication;
+        if (authentication != null) {
+            userAuthInfo.setUserAcc(authentication.getName());
+            return userAuthInfo;
+        }
+        return userAuthInfo;
     }
 
     
