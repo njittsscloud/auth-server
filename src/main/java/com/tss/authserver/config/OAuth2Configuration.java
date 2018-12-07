@@ -13,6 +13,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
@@ -91,6 +93,9 @@ public class OAuth2Configuration {
          * */
         @Override
         public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+            // jdbc
+//            clients.withClientDetails(clientDetails());
+            // 内存
             clients
                     .inMemory()
                     .withClient(oauth2Properties.getClientId())
@@ -98,6 +103,11 @@ public class OAuth2Configuration {
                     .scopes(oauth2Properties.getScope())
                     .authorizedGrantTypes(oauth2Properties.getGrantType())
                     .accessTokenValiditySeconds(oauth2Properties.getTokenValidityInSeconds());
+        }
+
+        @Bean
+        public ClientDetailsService clientDetails() {
+            return new JdbcClientDetailsService(dataSource);
         }
 
     }
