@@ -1,23 +1,16 @@
 package com.tss.authserver.feign.vo;
 
-import com.alibaba.fastjson.annotation.JSONField;
-
-import java.util.Date;
 import java.util.Set;
 
 /**
  * @author MQG
  * @date 2018/11/30
  */
-public class LoginUserInfoVO<T> {
+public class UserAuthInfoVO<T> {
     private long userId;
     private String userAcc;
     private String name;
     private String password;
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
-    private Date expireDate;
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
-    private Date createTime;
     private Set<String> permissions;
     private Set<String> roles;
     private T extra;
@@ -44,22 +37,6 @@ public class LoginUserInfoVO<T> {
 
     public void setUserId(long userId) {
         this.userId = userId;
-    }
-
-    public Date getExpireDate() {
-        return expireDate;
-    }
-
-    public void setExpireDate(Date expireDate) {
-        this.expireDate = expireDate;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
     }
 
     public String getName() {

@@ -1,7 +1,7 @@
 package com.tss.authserver.service;
 
 import com.tss.authserver.feign.AccountService;
-import com.tss.authserver.feign.vo.LoginUserInfoVO;
+import com.tss.authserver.feign.vo.UserAuthInfoVO;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,16 +36,16 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        LoginUserInfoVO loginUserInfo = this.getUserInfo(username);
-        if (loginUserInfo == null) {
+        UserAuthInfoVO userAuthInfo = this.getUserInfo(username);
+        if (userAuthInfo == null) {
             throw new AuthenticationCredentialsNotFoundException("用户不存在");
         }
 
-        User user = new User(loginUserInfo.getUserAcc(), loginUserInfo.getPassword(), this.buildGrantedAuthority(loginUserInfo));
+        User user = new User(userAuthInfo.getUserAcc(), userAuthInfo.getPassword(), this.buildGrantedAuthority(userAuthInfo));
         return user;
     }
     
-    private LoginUserInfoVO getUserInfo(String username) {
+    private UserAuthInfoVO getUserInfo(String username) {
         // 为了支持多角色登录，这里username后面拼装上登录类型,如username|type
         String[] params = username.split("\\|");
         username = params[0];// 真正的用户名
@@ -66,11 +66,11 @@ public class UserDetailServiceImpl implements UserDetailsService {
     }
 
     // 获取用户的所有权限并且SpringSecurity需要的集合
-    private Collection<GrantedAuthority> buildGrantedAuthority(LoginUserInfoVO loginUserInfo) {
+    private Collection<GrantedAuthority> buildGrantedAuthority(UserAuthInfoVO userAuthInfo) {
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
 
-        if (CollectionUtils.isNotEmpty(loginUserInfo.getRoles())) {
-            loginUserInfo.getRoles().forEach(e -> {
+        if (CollectionUtils.isNotEmpty(userAuthInfo.getRoles())) {
+            userAuthInfo.getRoles().forEach(e -> {
                 String role = (String) e;
                 if (role.startsWith("ROLE_")) {
                     grantedAuthorities.add(new SimpleGrantedAuthority(role));
@@ -80,8 +80,8 @@ public class UserDetailServiceImpl implements UserDetailsService {
             });
         }
 
-        if (CollectionUtils.isNotEmpty(loginUserInfo.getPermissions())) {
-            loginUserInfo.getRoles().stream().forEach(e -> {
+        if (CollectionUtils.isNotEmpty(userAuthInfo.getPermissions())) {
+            userAuthInfo.getRoles().stream().forEach(e -> {
                 grantedAuthorities.add(new SimpleGrantedAuthority((String) e));
             });
         }
