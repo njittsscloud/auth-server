@@ -1,5 +1,6 @@
 package com.tss.authserver.service;
 
+import com.tss.authserver.constants.RoleTypeEnum;
 import com.tss.authserver.feign.AccountService;
 import com.tss.authserver.feign.vo.UserAuthInfoVO;
 import org.apache.commons.collections.CollectionUtils;
@@ -49,18 +50,20 @@ public class UserDetailServiceImpl implements UserDetailsService {
         // 为了支持多角色登录，这里username后面拼装上登录类型,如username|type
         String[] params = username.split("\\|");
         username = params[0];// 真正的用户名
-        
-        switch (params[1]) {
-            case "1": 
+        RoleTypeEnum roleTypeEnum = RoleTypeEnum.getById(Integer.valueOf(params[1]));
+        if (roleTypeEnum == null) {
+            throw new AuthenticationCredentialsNotFoundException("无效的角色类型");
+        }
+
+        switch (roleTypeEnum) {
+            case ADMIN:
                 break;
-            case "2":
+            case SYY:
                 break;
-            case "3":
-                break;
-            case "4":
+            case TEACHER:
+                return accountService.findTeacherByUserAcc(username);
+            case STUDENT:
                 return accountService.findStudentByUserAcc(username);
-            default:
-                throw new AuthenticationCredentialsNotFoundException("账号无效");
         }
         return null;
     }

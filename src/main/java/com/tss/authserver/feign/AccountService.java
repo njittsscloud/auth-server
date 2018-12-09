@@ -12,4 +12,6 @@ public interface AccountService {
     @RequestMapping(value = "/student/info/getAuthInfoByUserAcc/{userAcc}", method = RequestMethod.GET)
     UserAuthInfoVO findStudentByUserAcc(@PathVariable("userAcc") String userAcc);
 
+    @RequestMapping(value = "/teacher/info/getAuthInfoByUserAcc/{userAcc}", method = RequestMethod.GET)
+    UserAuthInfoVO findTeacherByUserAcc(@PathVariable("userAcc") String userAcc);
 }
